@@ -12,6 +12,8 @@ import (
 
 func main() {
 
+	rpm_ostree_status := rpmostree_status()
+
 	//Get Hostname
 	out, err := os.ReadFile("/etc/hostname")
 	if err != nil {
@@ -44,7 +46,7 @@ func main() {
 	fmt.Println("Shell:", get_shell())
 
 	fmt.Println("--------------- RPM-OStree ----------------")
-	fmt.Println("BaseCommit:", basecommit(rpmostree_status()))
+	fmt.Println("BaseCommit:", basecommit(rpm_ostree_status))
 }
 
 func uptime_calc(uptime_seconds int) string {
