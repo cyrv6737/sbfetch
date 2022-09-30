@@ -34,13 +34,8 @@ func main() {
 	fmt.Println("Kernel:", proc_version[2])
 
 	//Get uptime
-	out, err = os.ReadFile("/proc/uptime")
-	if err != nil {
-		log.Fatal(err)
-	}
-	seconds := strings.Split(string(out), ".")
-	real_seconds, err := strconv.Atoi(seconds[0])
-	fmt.Println("Uptime:", uptime_calc(real_seconds))
+
+	fmt.Println("Uptime:", uptime())
 
 	//Get current shell
 	fmt.Println("Shell:", get_shell())
@@ -49,11 +44,17 @@ func main() {
 	fmt.Println("BaseCommit:", basecommit(rpm_ostree_status))
 }
 
-func uptime_calc(uptime_seconds int) string {
-	days := uptime_seconds / 86400
-	hours := (uptime_seconds - days*86400) / 3600
-	minutes := (uptime_seconds - days*86400 - hours*3600) / 60
-	seconds := uptime_seconds - days*86400 - hours*3600 - minutes*60
+func uptime() string {
+	out, err := os.ReadFile("/proc/uptime")
+	if err != nil {
+		log.Fatal(err)
+	}
+	conv_seconds := strings.Split(string(out), ".")
+	real_seconds, err := strconv.Atoi(conv_seconds[0])
+	days := real_seconds / 86400
+	hours := (real_seconds - days*86400) / 3600
+	minutes := (real_seconds - days*86400 - hours*3600) / 60
+	seconds := real_seconds - days*86400 - hours*3600 - minutes*60
 
 	result := strconv.Itoa(days) + " days " + strconv.Itoa(hours) + " hours " + strconv.Itoa(minutes) + " minutes " + strconv.Itoa(seconds) + " seconds "
 	return result
