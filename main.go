@@ -42,6 +42,7 @@ func main() {
 
 	fmt.Println("--------------- RPM-OStree ----------------")
 	fmt.Println("BaseCommit:", basecommit(rpm_ostree_status))
+	fmt.Println("Layered Packages:", layered_packages(rpm_ostree_status))
 }
 
 func uptime() string {
@@ -117,7 +118,7 @@ func get_shell() string {
 
 //Runs rpm-ostree status, returns output as string
 func run_rpmostree_status() string {
-	status, err := exec.Command("rpm-ostree", "status").Output()
+	status, err := exec.Command("rpm-ostree", "status", "-b").Output()
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -133,4 +134,22 @@ func basecommit(status string) string {
 		}
 	}
 	return ""
+}
+
+func layered_packages(status string) int {
+	status = strings.Replace(status, "\n", " ", -1)
+	status_fields := strings.Fields(status)
+	for i := 0; i < len(status_fields); i++ {
+		if strings.Contains(status_fields[i], "LayeredPackages:") {
+			layered_num := -1
+			for j := i; j < len(status_fields); j++ {
+				if strings.Contains(status_fields[j], "LocalPackages:") {
+					return layered_num
+				} else {
+					layered_num++
+				}
+			}
+		}
+	}
+	return 0
 }
