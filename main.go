@@ -12,7 +12,7 @@ import (
 
 func main() {
 
-	rpm_ostree_status := rpmostree_status()
+	rpm_ostree_status := run_rpmostree_status()
 
 	//Get Hostname
 	out, err := os.ReadFile("/etc/hostname")
@@ -116,7 +116,7 @@ func get_shell() string {
 }
 
 //Runs rpm-ostree status, returns output as string
-func rpmostree_status() string {
+func run_rpmostree_status() string {
 	status, err := exec.Command("rpm-ostree", "status").Output()
 	if err != nil {
 		log.Fatal(err)
